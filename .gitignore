@@ -1,0 +1,24 @@
+# Downloaded audio — never commit the haul itself
+downloads/
+*.mp3
+*.m4b
+*.m4a
+*.ogg
+*.flac
+*.wav
+*.part
+manifest.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+*.swp

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/open-audio-fetch/catalog_schema.json",
+  "title": "open-audio-fetch source catalog",
+  "description": "The contract every entry in catalog.json must satisfy. This is what a contributor's PR is validated against — both by `open-audio-fetch --validate-catalog` and in CI. The legality fields are mandatory: a source belongs in this index only if it offers audio for free and its terms/robots permit fetching.",
+  "type": "object",
+  "required": ["version", "_about", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 2,
+      "description": "Catalog schema version."
+    },
+    "_about": {
+      "type": "object",
+      "description": "Human-facing legend and provenance; not validated per-key."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "url", "categories", "license", "license_url",
+        "personal_use", "redistributable", "robots_ok", "access",
+        "formats", "adapter_status", "added_by"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Stable slug; also the CLI argument if an adapter exists."
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "music", "classical", "audiobooks", "classics", "poetry",
+              "podcasts", "educational", "historical", "live-concerts",
+              "remix", "samples", "sound-effects", "index"
+            ]
+          }
+        },
+        "license": {
+          "description": "The prevailing license posture of the source.",
+          "enum": ["public-domain", "cc0", "creative-commons", "free-personal", "mixed"]
+        },
+        "license_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?://",
+          "description": "REQUIRED. Page stating the rights (a license URL, a PD statement, or the section of terms granting free download)."
+        },
+        "terms_url": {
+          "type": ["string", "null"],
+          "description": "Site terms of service, if distinct from license_url."
+        },
+        "personal_use": {
+          "const": true,
+          "description": "Must be true — free personal use is the baseline for inclusion."
+        },
+        "redistributable": {
+          "description": "May a downloader legally re-share the content? yes=PD/CC0/CC-BY; conditional=CC with NC/SA/ND terms; no=personal-listening only (e.g. podcasts); mixed=varies per item.",
+          "enum": ["yes", "conditional", "no", "mixed"]
+        },
+        "robots_ok": {
+          "type": "boolean",
+          "description": "Whether robots.txt / API terms permit the fetching this project does. Must be true to ship an active adapter."
+        },
+        "robots": {
+          "type": ["string", "null"],
+          "description": "Human note on the robots/terms posture."
+        },
+        "access": {
+          "enum": ["api", "feed", "web-scrape", "hybrid"]
+        },
+        "api": { "type": ["string", "null"] },
+        "check_url": {
+          "type": ["string", "null"],
+          "pattern": "^https?://",
+          "description": "Canonical URL `--doctor` should probe for robots + reachability — the endpoint we actually fetch (e.g. the API host), not the marketing homepage. Falls back to `url` when absent."
+        },
+        "bulk": { "type": ["string", "null"] },
+        "formats": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "adapter_status": {
+          "enum": ["implemented", "experimental", "planned", "index-only"]
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "added_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Contributor handle (e.g. 'core' or a GitHub username)."
+        },
+        "verified": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "ISO date a maintainer last confirmed the license/robots claim."
+        },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # No dependencies to install — standard library only.
+      - name: Validate the catalog (legality gate)
+        run: python -m open_audio_fetch --validate-catalog
+        env:
+          PYTHONPATH: src
+
+      - name: Check SITES.md is regenerated from the catalog
+        run: |
+          python scripts/gen_sites.py
+          git diff --exit-code SITES.md
+
+      - name: Run the offline test suite
+        run: python -m unittest discover -s tests -t tests
+        env:
+          PYTHONPATH: src
+
+      - name: Smoke-test the CLI as a plain subprocess (no harness)
+        run: |
+          python -m open_audio_fetch --version
+          python -m open_audio_fetch --list-sites
+          python -m open_audio_fetch --catalog music
+        env:
+          PYTHONPATH: src

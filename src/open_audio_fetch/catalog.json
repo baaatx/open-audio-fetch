@@ -1,0 +1,472 @@
+{
+  "version": 2,
+  "_about": {
+    "purpose": "A curated index of websites offering free, legally downloadable audio (music, audiobooks, podcasts, educational, historical). Consumed by `open-audio-fetch --catalog`.",
+    "note": "No single canonical machine-readable index of these sources existed at time of writing; this catalog synthesizes several human-maintained listicles (Open Culture, Hongkiat's CC list, Silverman Sound, etc.) into structured data.",
+    "license_key": {
+      "public-domain": "No rights reserved; download and reuse freely.",
+      "creative-commons": "Per-track CC licenses; free to download, but honor attribution / non-commercial / share-alike terms for any reuse or redistribution.",
+      "free-personal": "Offered free for personal listening (e.g. podcast RSS). Not licensed for redistribution.",
+      "mixed": "Contains items under multiple licenses; check per item.",
+      "cc0": "No rights reserved (CC0); download and reuse freely."
+    },
+    "adapter_status_key": {
+      "implemented": "A working SiteAdapter ships in this repo.",
+      "planned": "On the backlog; not yet implemented.",
+      "index-only": "Aggregator/listicle, not a host; mine it for more sources.",
+      "experimental": "A working SiteAdapter ships, but the source is scrape-fragile or login/quota-gated; treat output as best-effort."
+    },
+    "schema": "catalog_schema.json",
+    "data_license": "This catalog data is dedicated to the public domain under CC0-1.0. The audio it points to keeps each source's own license (see each entry).",
+    "redistributable_key": {
+      "yes": "Freely re-shareable (PD / CC0 / CC-BY-style).",
+      "conditional": "Re-shareable only under the item's CC terms (NC / SA / ND vary per item).",
+      "no": "Free to download for personal listening only; do NOT redistribute (e.g. podcast episodes).",
+      "mixed": "Varies per item — check each item's recorded rights."
+    }
+  },
+  "sources": [
+    {
+      "id": "listentogenius",
+      "name": "Listen to Genius (Redwood Audiobooks)",
+      "url": "https://listentogenius.com/",
+      "categories": [
+        "audiobooks",
+        "classics",
+        "poetry",
+        "educational"
+      ],
+      "license": "public-domain",
+      "license_url": "https://listentogenius.com/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": true,
+      "robots": "User-agent: * / Disallow: (fully permissive)",
+      "access": "web-scrape",
+      "api": null,
+      "formats": [
+        "mp3"
+      ],
+      "bulk": "Crawl index.php/titles.php -> author.php work pages -> recordings*/*.mp3",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Professionally narrated public-domain classics. Modest catalog (hundreds of works)."
+    },
+    {
+      "id": "librivox",
+      "name": "LibriVox",
+      "url": "https://librivox.org/",
+      "categories": [
+        "audiobooks",
+        "classics",
+        "poetry"
+      ],
+      "license": "public-domain",
+      "license_url": "https://librivox.org/pages/public-domain/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": true,
+      "robots": "Permissive; API intended for reuse.",
+      "access": "api",
+      "api": "https://librivox.org/api/feed/audiobooks (JSON/XML; fields incl. url_zip_file per book)",
+      "formats": [
+        "mp3",
+        "m4b",
+        "ogg"
+      ],
+      "bulk": "API paginates all ~20k books; each book offers a 'zip of entire book' (64kbps MP3) and per-chapter MP3s mirrored on archive.org.",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "The canonical volunteer public-domain audiobook project. Huge. Mirrored on Internet Archive."
+    },
+    {
+      "id": "internetarchive",
+      "name": "Internet Archive — Audio",
+      "url": "https://archive.org/details/audio",
+      "categories": [
+        "music",
+        "audiobooks",
+        "podcasts",
+        "historical",
+        "educational",
+        "live-concerts"
+      ],
+      "license": "mixed",
+      "license_url": "https://archive.org/about/terms.php",
+      "terms_url": "https://archive.org/about/terms.php",
+      "personal_use": true,
+      "redistributable": "mixed",
+      "robots_ok": true,
+      "robots": "Has API terms; be gentle, identify yourself. Live Music Archive (etree) is band-sanctioned recordings.",
+      "access": "api",
+      "api": "https://archive.org/advancedsearch.php + https://archive.org/metadata/<identifier>",
+      "formats": [
+        "mp3",
+        "flac",
+        "ogg",
+        "m4b"
+      ],
+      "bulk": "advancedsearch.php (JSON query) -> metadata API (/metadata/<id>) lists downloadable files -> download via /download/<id>/<file>. Or the `internetarchive` CLI/`ia` tool.",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "The mega-source. Millions of items. Filter by mediatype:audio and collection. Respect rate limits; prefer the official `ia` client for very large pulls."
+    },
+    {
+      "id": "freemusicarchive",
+      "name": "Free Music Archive (FMA)",
+      "url": "https://freemusicarchive.org/",
+      "categories": [
+        "music"
+      ],
+      "license": "creative-commons",
+      "license_url": "https://freemusicarchive.org/about",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "conditional",
+      "robots_ok": true,
+      "robots": "Check current robots.txt before crawling; throttle hard.",
+      "access": "web-scrape",
+      "api": "Historically had an API (freemusicarchive.org/api); status varies since ownership change. Scrape track pages as fallback.",
+      "formats": [
+        "mp3"
+      ],
+      "bulk": "Browse by genre/curator; each track page exposes a direct download when the license allows.",
+      "adapter_status": "planned",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Site is now a JavaScript single-page app; static scraping returns nothing (browse pages 404 / render client-side). Downgraded to planned pending an official API or a headless-render approach. Content is genuinely CC and free."
+    },
+    {
+      "id": "jamendo",
+      "name": "Jamendo Music",
+      "url": "https://www.jamendo.com/",
+      "categories": [
+        "music"
+      ],
+      "license": "creative-commons",
+      "license_url": "https://www.jamendo.com/legal/creative-commons",
+      "terms_url": "https://www.jamendo.com/legal/terms-use",
+      "personal_use": true,
+      "redistributable": "conditional",
+      "robots_ok": true,
+      "robots": "API is the sanctioned path; register a client_id and respect quotas.",
+      "access": "api",
+      "api": "https://developer.jamendo.com/v3.0 (requires free client_id)",
+      "check_url": "https://api.jamendo.com/v3.0/",
+      "formats": [
+        "mp3",
+        "flac"
+      ],
+      "bulk": "API returns track lists with audiodownload URLs; page through by tag/genre/artist.",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "600k+ CC tracks from independent artists. Attribution required; some tracks NC."
+    },
+    {
+      "id": "ccmixter",
+      "name": "ccMixter",
+      "url": "https://ccmixter.org/",
+      "categories": [
+        "music",
+        "remix",
+        "samples"
+      ],
+      "license": "creative-commons",
+      "license_url": "https://creativecommons.org/licenses/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "conditional",
+      "robots_ok": false,
+      "robots": "API sanctioned.",
+      "access": "api",
+      "api": "http://ccmixter.org/query-api (dig.ccmixter.org)",
+      "formats": [
+        "mp3",
+        "flac"
+      ],
+      "bulk": "Query API returns downloadable file URLs with license metadata.",
+      "adapter_status": "planned",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Its query API is the only discovery path, but robots.txt explicitly `Disallow: /api/` — so we cannot enumerate tracks politely. Kept planned; content is genuinely CC but not reachable without violating robots. Do not scrape around it."
+    },
+    {
+      "id": "musopen",
+      "name": "Musopen",
+      "url": "https://musopen.org/",
+      "categories": [
+        "music",
+        "classical"
+      ],
+      "license": "public-domain",
+      "license_url": "https://musopen.org/music/",
+      "terms_url": "https://musopen.org/tos/",
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": false,
+      "robots": "Respect the per-day download cap; do not attempt to bypass it.",
+      "access": "web-scrape",
+      "api": null,
+      "formats": [
+        "mp3",
+        "flac"
+      ],
+      "bulk": "Recording pages expose downloads. FREE ACCOUNT IS RATE-LIMITED to ~5 downloads/day in standard quality — respect this hard limit.",
+      "adapter_status": "planned",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Cloudflare returns 403 to our User-Agent even for robots.txt, which robots parsers treat as disallow-all — so we cannot crawl it politely. Downgraded to planned; do NOT scrape around the block. The ~5/day free cap also applies."
+    },
+    {
+      "id": "lit2go",
+      "name": "Lit2Go (FCIT, Univ. of South Florida)",
+      "url": "https://etc.usf.edu/lit2go/",
+      "categories": [
+        "audiobooks",
+        "classics",
+        "educational"
+      ],
+      "license": "public-domain",
+      "license_url": "https://etc.usf.edu/lit2go/about/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": true,
+      "robots": "Educational resource; crawl gently.",
+      "access": "web-scrape",
+      "api": null,
+      "formats": [
+        "mp3",
+        "pdf"
+      ],
+      "bulk": "Browse by author/book/collection; each passage offers an MP3 + companion PDF.",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "~200 teacher-friendly audiobooks with reading levels and PDFs."
+    },
+    {
+      "id": "loyalbooks",
+      "name": "Loyal Books (formerly Books Should Be Free)",
+      "url": "https://www.loyalbooks.com/",
+      "categories": [
+        "audiobooks",
+        "classics"
+      ],
+      "license": "public-domain",
+      "license_url": "https://www.loyalbooks.com/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": true,
+      "robots": "Crawl gently.",
+      "access": "web-scrape",
+      "api": null,
+      "formats": [
+        "mp3"
+      ],
+      "bulk": "Catalog in 29 languages; per-book pages list chapter MP3s (largely LibriVox-sourced).",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Nicely categorized front-end over public-domain LibriVox audiobooks; chapter MP3s are hosted on archive.org. Verified live 2026-07-26 (homepage -> /book/ pages -> chapter MP3s)."
+    },
+    {
+      "id": "librivox_via_ia",
+      "name": "LibriVox Collection on Internet Archive",
+      "url": "https://archive.org/details/librivoxaudio",
+      "categories": [
+        "audiobooks",
+        "classics"
+      ],
+      "license": "public-domain",
+      "license_url": "https://librivox.org/pages/public-domain/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "yes",
+      "robots_ok": true,
+      "robots": "Same as Internet Archive.",
+      "access": "api",
+      "api": "archive.org metadata API on collection:librivoxaudio",
+      "formats": [
+        "mp3",
+        "ogg",
+        "m4b"
+      ],
+      "bulk": "Query the librivoxaudio collection via advancedsearch, download files via metadata API.",
+      "adapter_status": "planned",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Alternative bulk path to LibriVox content through the IA API."
+    },
+    {
+      "id": "podcastindex",
+      "name": "Podcast Index",
+      "url": "https://podcastindex.org/",
+      "categories": [
+        "podcasts"
+      ],
+      "license": "free-personal",
+      "license_url": "https://podcastindex.org/",
+      "terms_url": "https://podcastindex.org/",
+      "personal_use": true,
+      "redistributable": "no",
+      "robots_ok": true,
+      "robots": "Open index. Episode audio is the creators' — download for personal listening only, not redistribution.",
+      "access": "api",
+      "api": "https://podcastindex-org.github.io/docs-api/ (free API key + secret)",
+      "check_url": "https://api.podcastindex.org/",
+      "formats": [
+        "mp3",
+        "m4a"
+      ],
+      "bulk": "Search/feeds endpoints return RSS feed URLs; parse each feed's <enclosure> to fetch episode audio.",
+      "adapter_status": "implemented",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Open, free podcast index. Two-stage: index -> feed -> episodes. Respect each show's terms."
+    },
+    {
+      "id": "loc",
+      "name": "Library of Congress — National Jukebox / Citizen DJ",
+      "url": "https://www.loc.gov/collections/national-jukebox/",
+      "categories": [
+        "historical",
+        "music",
+        "educational"
+      ],
+      "license": "mixed",
+      "license_url": "https://www.loc.gov/legal/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "mixed",
+      "robots_ok": false,
+      "robots": "US government PD; crawl gently.",
+      "access": "api",
+      "api": "loc.gov JSON API (append ?fo=json to collection URLs)",
+      "formats": [
+        "mp3"
+      ],
+      "bulk": "16k+ early PD recordings; Citizen DJ packages PD samples. Page the JSON API.",
+      "adapter_status": "planned",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Our robots check refuses loc.gov collection/audio JSON paths, and National Jukebox is largely streaming-only under a Sony agreement (few downloadable files, rights per-item). Downgraded to planned; not a polite bulk-download target today."
+    },
+    {
+      "id": "openculture",
+      "name": "Open Culture",
+      "url": "https://www.openculture.com/freeaudiobooks",
+      "categories": [
+        "audiobooks",
+        "educational",
+        "index"
+      ],
+      "license": "mixed",
+      "license_url": "https://www.openculture.com/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "no",
+      "robots_ok": true,
+      "robots": "Editorial site.",
+      "access": "web-scrape",
+      "api": null,
+      "formats": [
+        "mp3"
+      ],
+      "bulk": "Aggregator: mostly links out to LibriVox/IA/university sources. Mine it to discover more sources rather than as a host.",
+      "adapter_status": "index-only",
+      "tags": [],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Also lists free online courses (audio lectures) worth indexing."
+    },
+    {
+      "id": "openverse",
+      "name": "Openverse",
+      "url": "https://openverse.org/",
+      "categories": [
+        "music",
+        "sound-effects",
+        "index"
+      ],
+      "license": "mixed",
+      "license_url": "https://openverse.org/",
+      "terms_url": null,
+      "personal_use": true,
+      "redistributable": "mixed",
+      "robots_ok": false,
+      "robots": "Open REST API is the sanctioned path; identify yourself.",
+      "access": "api",
+      "api": "https://api.openverse.org/v1/ (audio endpoint; free, OAuth for higher limits)",
+      "check_url": "https://api.openverse.org/v1/audio/",
+      "formats": [
+        "mp3",
+        "ogg",
+        "flac",
+        "wav"
+      ],
+      "bulk": "Search /v1/audio across Jamendo, Freesound and Wikimedia Commons; each result links to the original download with its own CC/PD license.",
+      "adapter_status": "planned",
+      "tags": [
+        "aggregator",
+        "cc-search"
+      ],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Open REST API, but robots.txt explicitly `Disallow: /v1/audio/` for all bots (and blocks AI crawlers). So despite being an appealing CC meta-source, it is NOT a polite audio-fetch target. Kept planned; do not crawl the audio endpoint."
+    },
+    {
+      "id": "freesound",
+      "name": "Freesound",
+      "url": "https://freesound.org/",
+      "categories": [
+        "sound-effects",
+        "samples"
+      ],
+      "license": "creative-commons",
+      "license_url": "https://freesound.org/help/faq/",
+      "terms_url": "https://freesound.org/help/tos_web/",
+      "personal_use": true,
+      "redistributable": "conditional",
+      "robots_ok": true,
+      "robots": "API is the sanctioned path; free API key required, login to download.",
+      "access": "api",
+      "api": "https://freesound.org/docs/api/ (free API key; token to download)",
+      "formats": [
+        "wav",
+        "aiff",
+        "flac",
+        "ogg",
+        "mp3"
+      ],
+      "bulk": "Text/search API returns sounds with per-sound CC license (CC0 / CC-BY / CC-BY-NC); download via the API.",
+      "adapter_status": "planned",
+      "tags": [
+        "collaborative",
+        "samples"
+      ],
+      "added_by": "core",
+      "verified": "2026-07-26",
+      "notes": "Collaborative CC sound database (CC0 / CC-BY / CC-BY-NC). Free download for registered users; honor each sound's specific license (NC where present)."
+    }
+  ]
+}
