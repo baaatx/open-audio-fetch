@@ -1,5 +1,12 @@
 # open-audio-fetch
 
+[![CI](https://github.com/baaatx/open-audio-fetch/actions/workflows/ci.yml/badge.svg)](https://github.com/baaatx/open-audio-fetch/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
+[![Data: CC0 1.0](https://img.shields.io/badge/data-CC0--1.0-green)](LICENSE-DATA)
+[![Free-audio sources](https://img.shields.io/badge/sources-15-orange)](SITES.md)
+[![No dependencies](https://img.shields.io/badge/deps-stdlib--only-lightgrey)](pyproject.toml)
+
 **A worldwide, community-maintained index of where free & legal audio lives —
 and a polite tool to fetch it.** Music, audiobooks, podcasts, classical,
 educational, historical. MP3, OGG, FLAC, M4B — whatever a source offers.
